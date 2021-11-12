@@ -369,12 +369,26 @@ function shouldUseToolCache(engine, version) {
   return engine === 'ruby' && !isHeadVersion(version)
 }
 
+function getUsername() {
+  const { env } = process;
+  const fromEnvironmentVariable = (
+    env.SUDO_USER
+      || env.C9_USER // Cloud9
+      || env.LOGNAME
+      || env.USER
+      || env.LNAME
+      || env.USERNAME
+  );
+  return fromEnvironmentVariable ?? 'runner'
+}
+
 function getPlatformToolCache(platform) {
   // Hardcode paths rather than using $RUNNER_TOOL_CACHE because the prebuilt Rubies cannot be moved anyway
   if (platform.startsWith('ubuntu-')) {
     return '/opt/hostedtoolcache'
   } else if (platform.startsWith('macos-')) {
-    return '/Users/runner/hostedtoolcache'
+    const name = getUsername()
+    return `/Users/${name}/hostedtoolcache`
   } else if (platform.startsWith('windows-')) {
     return 'C:/hostedtoolcache/windows'
   } else {
