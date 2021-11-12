@@ -133,7 +133,8 @@ function getUsername() {
       || env.LNAME
       || env.USERNAME
   );
-  return fromEnvironmentVariable ?? 'runner'
+  if (fromEnvironmentVariable == null) return 'runner'
+  return fromEnvironmentVariable
 }
 
 function getPlatformToolCache(platform) {
